@@ -45,7 +45,7 @@ func largestMatch(in string) int { // implement as a sliding window
 		count := 1
 
 		for start+count < len(in) && strings.HasPrefix(CurrentMatchTarget, in[start:start+count]) {
-			if CurrentMatchMode == align && (start+1)%4 != 0 {
+			if CurrentMatchMode == align && start%4 != 0 {
 				break // stop this search
 			}
 

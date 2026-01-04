@@ -2,9 +2,7 @@ package main
 
 import (
 	"fmt"
-	"math/rand/v2"
 	"os"
-	"strconv"
 	"strings"
 	"sync"
 	"sync/atomic"
@@ -48,14 +46,12 @@ func main() {
 	go maxWorker()
 	go tickerWorker()
 
-	seen := sync.Map{}
 	results := sync.Map{}
-	max, _ := strconv.ParseUint(prepareInput("0FFF FFFF FFFF FFFF"), 16, 64)
 
 	wg := &sync.WaitGroup{}
 	wg.Add(ThreadCount)
 
-	for threadId := range ThreadCount {
+	for threadId := range uint(ThreadCount) {
 		go func() {
 			defer wg.Done()
 
@@ -67,16 +63,7 @@ func main() {
 				}
 
 				// first, find a random ID
-				id := rand.N(max)
-				idStr := fmt.Sprintf("%016X", id)
-
-				if !AllowConflicts {
-					// push it to the map
-					_, loaded := seen.LoadOrStore(idStr, true)
-					if loaded {
-						continue // find another
-					}
-				}
+				idStr := DivideLabour.GetJob(threadId)
 
 				// calculate
 				res, err := UIDToKonami(idStr, NewEncrypter())
